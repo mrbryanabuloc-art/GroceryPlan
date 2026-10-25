@@ -3,870 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 1: Filipino Comfort Classics & Stews - Meal Planner</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        terracotta: {
-                            50: '#fff7f5',
-                            100: '#ffefe8',
-                            200: '#ffdcd1',
-                            500: '#e05a36',
-                            600: '#c84321',
-                            700: '#a63318',
-                        },
-                        sage: {
-                            50: '#f4f7f4',
-                            100: '#e3ebe3',
-                            500: '#5a8262',
-                            600: '#46684d',
-                        },
-                        warmbg: '#faf7f2',
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Family Meal Planner & Smart Inventory</title>
     <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e67e22;
+            --accent: #27ae60;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --border: #dee2e6;
+        }
         body {
-            background-color: #faf7f2;
-            color: #2d3748;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 50px;
         }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        .tabs {
+            display: flex;
+            background: white;
             border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: none;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .card {
+            background: var(--card-bg);
             border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--secondary);
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.1rem;
         }
-        .checked-item {
+        .toddler-tip {
+            font-size: 0.85rem;
+            color: #d35400;
+            background: #fef5ec;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+        /* Grocery List Styles */
+        .grocery-category {
+            font-weight: bold;
+            margin-top: 15px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 5px;
+        }
+        .grocery-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 0.95rem;
+        }
+        .grocery-item input {
+            margin-right: 10px;
+            margin-top: 3px;
+            transform: scale(1.2);
+        }
+        .grocery-item.checked span {
             text-decoration: line-through;
-            opacity: 0.55;
+            color: #aaa;
+        }
+        .sub-note {
+            font-size: 0.8rem;
+            color: #555;
+            margin-left: 25px;
+            display: block;
+        }
+        /* Inventory Styles */
+        .inventory-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .inventory-input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .inventory-tag {
+            display: inline-block;
+            background: #e8f8f5;
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin: 4px;
+            font-size: 0.9rem;
+            border: 1px solid #a3e4d7;
+        }
+        .inventory-tag button {
+            background: none;
+            border: none;
+            color: #c0392b;
+            font-weight: bold;
+            margin-left: 6px;
+            cursor: pointer;
+        }
+        /* AI Assistant Section */
+        .ai-box {
+            background: #f4f6f7;
+            border: 1px solid #d5dbdb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .ai-result {
+            margin-top: 15px;
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        /* Custom Meal Reorganizer */
+        .reorder-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .reorder-row select, .reorder-row input {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
         }
     </style>
 </head>
-<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-terracotta-100 selection:text-terracotta-700">
+<body>
 
-    <!-- Top Navigation Header -->
-    <header class="bg-white border-b border-orange-100 sticky top-0 z-30 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-terracotta-500 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-terracotta-500/20">
-                    <i class="fa-solid font-bold fa-utensils"></i>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold text-gray-900 leading-tight">Grocery Planner</h1>
-                    <p class="text-xs text-gray-500 font-medium">4-Week Filipino Family Meal Planner & Grocery List</p>
-                </div>
-            </div>
+<header>
+    <h1>🛒 Family Meal Planner & AI Assistant</h1>
+    <p>Clayton, NC & Raleigh Sourcing | Toddler-Friendly Meals</p>
+</header>
 
-            <!-- Header Action Stats -->
-            <div class="hidden md:flex items-center space-x-4 text-sm">
-                <div class="flex items-center space-x-2 text-gray-600 bg-orange-50/80 px-3 py-1.5 rounded-full border border-orange-100">
-                    <i class="fa-solid fa-location-dot text-terracotta-500"></i>
-                    <span>Clayton & Raleigh, NC</span>
-                </div>
-                <div class="flex items-center space-x-2 text-gray-600 bg-sage-50 px-3 py-1.5 rounded-full border border-sage-100">
-                    <i class="fa-solid fa-child-reaching text-sage-600"></i>
-                    <span>Toddler Friendly Tips</span>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
-        <!-- Top Navigation Controls: View Selector & Week Selector -->
-        <div class="bg-white p-3 rounded-2xl shadow-sm border border-orange-100 mb-6 space-y-3">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-                <!-- Main View Tabs -->
-                <div class="flex bg-gray-100 p-1 rounded-xl w-full sm:w-auto">
-                    <button id="tab-planner" onclick="switchTab('planner')" class="flex-1 sm:flex-none py-2 px-5 text-center rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center space-x-2 bg-terracotta-500 text-white shadow-sm">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <span>Meal Planner</span>
-                    </button>
-                    <button id="tab-grocery" onclick="switchTab('grocery')" class="flex-1 sm:flex-none py-2 px-5 text-center rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center space-x-2 text-gray-600 hover:text-terracotta-600">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span>Smart Grocery List</span>
-                        <span id="grocery-badge" class="bg-orange-100 text-terracotta-700 text-xs px-2 py-0.5 rounded-full font-bold ml-1">0/0</span>
-                    </button>
-                </div>
-
-                <!-- Week Picker -->
-                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider hidden sm:inline"><i class="fa-solid fa-filter text-terracotta-500 mr-1"></i> Week:</span>
-                    <div class="flex bg-orange-50 p-1 rounded-xl border border-orange-100 w-full sm:w-auto overflow-x-auto custom-scrollbar">
-                        <button onclick="selectWeek(1)" id="week-btn-1" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-terracotta-700 shadow-sm whitespace-nowrap">Week 1</button>
-                        <button onclick="selectWeek(2)" id="week-btn-2" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-terracotta-600 transition-all whitespace-nowrap">Week 2</button>
-                        <button onclick="selectWeek(3)" id="week-btn-3" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-terracotta-600 transition-all whitespace-nowrap">Week 3</button>
-                        <button onclick="selectWeek(4)" id="week-btn-4" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-terracotta-600 transition-all whitespace-nowrap">Week 4</button>
-                        <button onclick="selectWeek('all')" id="week-btn-all" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-terracotta-600 transition-all whitespace-nowrap">All 4 Weeks</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= VIEW 1: MEAL PLANNER ================= -->
-        <section id="view-planner" class="space-y-6">
-            <!-- Header Banner -->
-            <div class="bg-gradient-to-r from-terracotta-500 to-amber-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-                <div class="absolute -right-8 -bottom-10 opacity-15 text-9xl">
-                    <i class="fa-solid fa-bowl-rice"></i>
-                </div>
-                <div class="relative z-10 max-w-2xl">
-                    <span id="banner-week-tag" class="inline-block bg-white/20 backdrop-blur-md text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-2">Week 1: Comfort Classics & Stews</span>
-                    <h2 id="banner-week-title" class="text-2xl sm:text-3xl font-extrabold mb-2">Warm, Soothing & Protein-Rich Filipino Comfort Foods</h2>
-                    <p class="text-orange-100 text-sm leading-relaxed">Specially customized for easy preparation in NC, with toddler mash tips and alternative sourcing for local Asian grocers & Walmart.</p>
-                </div>
-            </div>
-
-            <!-- Day Selector Cards -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2" id="days-nav">
-                <!-- Day buttons populated by JS -->
-            </div>
-
-            <!-- Active Day Detailed Card -->
-            <div id="day-detail-container">
-                <!-- Detailed content injected by JS -->
-            </div>
-        </section>
-
-
-        <!-- ================= VIEW 2: GROCERY LIST ================= -->
-        <section id="view-grocery" class="space-y-6 hidden">
-            <!-- Controls Bar -->
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-orange-100 space-y-4">
-                
-                <!-- Store Mode Selector -->
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-base">Shopping Location & Store Filter</h3>
-                        <p class="text-xs text-gray-500">Showing ingredients for <span id="grocery-active-week-label" class="font-bold text-terracotta-600">Week 1</span></p>
-                    </div>
-                    <div class="inline-flex p-1 bg-gray-100 rounded-xl">
-                        <button onclick="setStoreFilter('all')" id="store-all" class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-white text-terracotta-600 shadow-sm transition-all">All Items</button>
-                        <button onclick="setStoreFilter('walmart')" id="store-walmart" class="px-3.5 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 transition-all">Walmart (Clayton, NC)</button>
-                        <button onclick="setStoreFilter('ac')" id="store-ac" class="px-3.5 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 transition-all">A&C Supermarket (Raleigh)</button>
-                    </div>
-                </div>
-
-                <!-- Search and Progress Bar -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                    <!-- Search Input -->
-                    <div class="relative md:col-span-2">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="grocery-search" oninput="renderGroceryList()" placeholder="Search ingredients (e.g., Calamansi, Milkfish, Rice)..." class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500 focus:bg-white transition-all">
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="flex items-center justify-end space-x-2">
-                        <button onclick="resetGroceryChecks()" class="px-3 py-2 text-xs font-semibold text-gray-600 hover:text-terracotta-600 bg-gray-100 hover:bg-orange-50 rounded-xl transition-all">
-                            <i class="fa-solid fa-rotate-right mr-1"></i> Reset Checks
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div>
-                    <div class="flex justify-between text-xs font-semibold mb-1 text-gray-600">
-                        <span>Shopping Progress</span>
-                        <span id="progress-percent">0% Completed</span>
-                    </div>
-                    <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                        <div id="progress-bar-fill" class="bg-terracotta-500 h-full w-0 transition-all duration-300"></div>
-                    </div>
-                </div>
-
-                <!-- Category Filters -->
-                <div class="flex flex-wrap gap-2 pt-1" id="category-pills">
-                    <!-- Category filter buttons -->
-                </div>
-            </div>
-
-            <!-- Grocery Items Categories Container -->
-            <div id="grocery-categories-container" class="space-y-5">
-                <!-- Injected via JS -->
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Simple Toast Notification -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none translate-y-3 flex items-center space-x-2 z-50">
-        <i class="fa-solid fa-circle-check text-green-400"></i>
-        <span id="toast-msg">Item updated</span>
+<div class="container">
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('planner')">📅 Meal Plan</button>
+        <button class="tab" onclick="switchTab('reorganizer')">✏️ Edit Schedule</button>
+        <button class="tab" onclick="switchTab('grocery')">🛒 Grocery List</button>
+        <button class="tab" onclick="switchTab('inventory')">🏠 Pantry & AI</button>
     </div>
 
-    <!-- Application Script -->
-    <script>
-        // --- 4-WEEK MEAL PLAN DATA STRUCTURE ---
-        const WEEK_THEMES = {
-            1: { tag: 'Week 1: Comfort Classics & Stews', title: 'Warm, Soothing & Protein-Rich Filipino Comfort Foods' },
-            2: { tag: 'Week 2: Savory Stir-Fries & Savory Bowls', title: 'Aromatic Stir-Fries, Rice Bowls & Mild Stews' },
-            3: { tag: 'Week 3: Hearty Home-Style Favorites', title: 'Nourishing Coconut Soups, Noodles & Weekend Soups' },
-            4: { tag: 'Week 4: Quick Weeknights & Family Feasts', title: 'Flavorful Weeknight Classics & Weekend Specials' },
-            'all': { tag: 'All 4 Weeks Combined Plan', title: 'Complete 28-Day Family & Toddler Meal Roadmap' }
-        };
+    <!-- TAB 1: MEAL PLANNER -->
+    <div id="planner" class="section active">
+        <h2>4-Week Family Meal Schedule</h2>
+        <div class="inventory-input-group" style="margin-bottom: 20px;">
+            <select id="weekFilter" onchange="filterWeeks()" style="flex:1; padding:10px; border-radius:6px; border:1px solid var(--border);">
+                <option value="all">Show All 4 Weeks</option>
+                <option value="1">Week 1: Comfort Classics & Stews</option>
+                <option value="2">Week 2: Savory Stir-Fries & Bowls</option>
+                <option value="3">Week 3: Hearty Home-Style Favorites</option>
+                <option value="4">Week 4: Quick Weeknights & Feasts</option>
+            </select>
+        </div>
+        <div id="mealPlanContainer"></div>
+    </div>
 
-        const MEAL_PLAN = [
-            // ================= WEEK 1 =================
-            {
-                week: 1, id: 'w1_mon', day: 'Monday', title: 'Chicken Tinola', subtitle: 'Ginger Chicken Soup with Chayote & Greens', tag: 'Warming Soup', prepTime: '40 mins',
-                ingredientsList: ['Chicken Bone-In Cut', 'Chayote Squash / Green Papaya', 'Spinach / Malunggay', 'Fresh Ginger', 'Garlic', 'Onion', 'Rice', 'Fish Sauce'],
-                description: 'A comforting, ginger-infused clear broth soup with tender chicken and soft squash. Perfect for cozy evenings and easy on digestion.',
-                toddlerTip: 'Shred the chicken tenderly and mash the soft chayote squash into warm rice with a few spoonfuls of broth for a non-spicy, soothing toddler bowl.',
-                servingIdea: 'Serve piping hot over warm Jasmine rice with a small side saucer of patis (fish sauce) for adults to adjust saltiness.'
-            },
-            {
-                week: 1, id: 'w1_tue', day: 'Tuesday', title: 'Pork Adobo with Sinangag', subtitle: 'Braised Pork with Garlic Fried Rice & Boiled Egg', tag: 'Filipino Classic', prepTime: '50 mins',
-                ingredientsList: ['Pork Shoulder/Belly', 'Garlic', 'Soy Sauce', 'Cane Vinegar', 'Bay Leaves', 'Black Peppercorns', 'Eggs', 'Rice'],
-                description: 'Savory, tangy braised pork shoulder simmered tender in garlic, soy sauce, and vinegar, paired with aromatic garlic fried rice.',
-                toddlerTip: 'Shred the pork into fine strands and chop hard-boiled egg whites/yolks. Mix into mild rice so the flavor isn\'t too concentrated for young palates.',
-                servingIdea: 'Pair with sliced fresh cucumbers or tomatoes to balance the rich savory sauce.'
-            },
-            {
-                week: 1, id: 'w1_wed', day: 'Wednesday', title: 'Ginisang Munggo', subtitle: 'Sautéed Mung Beans with Spinach & Pork Bits', tag: 'High Protein & Fiber', prepTime: '45 mins',
-                ingredientsList: ['Dried Mung Beans', 'Pork Belly Bits / Ground Pork', 'Spinach / Malunggay', 'Garlic', 'Onion', 'Tomatoes', 'Fish Sauce'],
-                description: 'Rich, hearty mung bean stew simmered with garlic, onions, pork bits, and leafy spinach leaves.',
-                toddlerTip: 'Mung beans naturally breakdown into a soft porridge-like texture. It is naturally easy for toddlers to eat with a spoon or mash with rice.',
-                servingIdea: 'Top with crunchy pork cracklings (chicharon) or fried fish for adult bowls for added texture.'
-            },
-            {
-                week: 1, id: 'w1_thu', day: 'Thursday', title: 'Beef Nilaga', subtitle: 'Clear Beef Shank Soup with Corn, Cabbage & Potatoes', tag: 'Rich Broth', prepTime: '60 mins',
-                ingredientsList: ['Beef Shank / Stew Meat', 'Cabbage', 'Potatoes', 'Corn on Cob', 'Peppercorns', 'Onion', 'Rice'],
-                description: 'Clean, clear beef soup slow-simmered with whole peppercorns, sweet corn, soft potatoes, and leafy cabbage.',
-                toddlerTip: 'Beef shank gets extremely tender. Cut potatoes and sweet corn kernels off the cob and mash with tender beef chunks.',
-                servingIdea: 'Serve with fish sauce and calamansi or lemon juice dip on the side.'
-            },
-            {
-                week: 1, id: 'w1_fri', day: 'Friday', title: 'Pancit Bihon Guisado', subtitle: 'Sautéed Rice Noodles with Chicken & Vegetables', tag: 'Quick Noodle Dish', prepTime: '30 mins',
-                ingredientsList: ['Bihon Rice Noodles', 'Chicken Breast/Thigh', 'Carrots', 'Cabbage', 'Celery', 'Soy Sauce', 'Garlic', 'Onion'],
-                description: 'Thin rice noodles stirred with shredded chicken, julienned carrots, sweet cabbage, and crunchy celery.',
-                toddlerTip: 'Use kitchen shears to cut the long noodles into small, bite-sized pieces so toddlers can easily eat them with fingers or a fork.',
-                servingIdea: 'Squeeze fresh calamansi or lemon juice over noodles just before serving.'
-            },
-            {
-                week: 1, id: 'w1_sat', day: 'Saturday', title: 'Sinigang na Baboy', subtitle: 'Pork Tamarind Sour Soup with Mixed Veggies', tag: 'Tangy Favorite', prepTime: '55 mins',
-                ingredientsList: ['Pork Ribs / Stew Meat', 'Sinigang Tamarind Mix', 'Bok Choy', 'Daikon Radish', 'Long Beans', 'Eggplant', 'Tomatoes', 'Onion'],
-                description: 'Signature Filipino tamarind sour broth filled with tender pork stew meat and a rich assortment of fresh garden vegetables.',
-                toddlerTip: 'If your toddler is sensitive to sourness, dilute their broth bowl with a tablespoon of warm water and serve soft radish/eggplant with rice.',
-                servingIdea: 'Best enjoyed piping hot over steaming white rice on a weekend family dinner.'
-            },
-            {
-                week: 1, id: 'w1_sun', day: 'Sunday', title: 'Tortang Talong', subtitle: 'Roasted Filipino Eggplant Omelet', tag: 'Kid Favorite', prepTime: '25 mins',
-                ingredientsList: ['Chinese Long Eggplants', 'Eggs', 'Garlic Powder', 'Salt & Pepper', 'Cooking Oil', 'Rice'],
-                description: 'Whole eggplants roasted until silky soft, flattened, dipped in whisked seasoned egg, and pan-fried until golden crisp on the outside.',
-                toddlerTip: 'Extremely soft inside texture. Cut into thin finger-strips for young toddlers learning self-feeding.',
-                servingIdea: 'Serve with banana ketchup or regular tomato ketchup for dipping!'
-            },
+    <!-- TAB 2: EDIT / REORGANIZE SCHEDULE -->
+    <div id="reorganizer" class="section">
+        <h2>Rearrange & Custom Plan Meals</h2>
+        <p style="font-size:0.9rem; color:#666;">Need to shuffle your menu for next month? Use this builder to assign any custom meal to a specific week and day.</p>
+        <div class="card">
+            <h3>Add or Customize Meal</h3>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <select id="customWeek">
+                    <option value="Week 1">Week 1</option>
+                    <option value="Week 2">Week 2</option>
+                    <option value="Week 3">Week 3</option>
+                    <option value="Week 4">Week 4</option>
+                    <option value="Next Month Custom">Next Month Custom</option>
+                </select>
+                <select id="customDay">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+                <input type="text" id="customMealName" placeholder="Meal Name (e.g., Thai Green Curry)">
+                <input type="text" id="customToddlerTip" placeholder="Toddler tip (e.g., mild spice, mash veggies)">
+                <button class="btn" onclick="addCustomMeal()">Save to Schedule</button>
+            </div>
+        </div>
+        <div id="customMealsList"></div>
+    </div>
 
-            // ================= WEEK 2 =================
-            {
-                week: 2, id: 'w2_mon', day: 'Monday', title: 'Pork Bistek Tagalog', subtitle: 'Citrus Soy Simmered Pork Loin with Onion Rings', tag: 'Savory Citrus', prepTime: '35 mins',
-                ingredientsList: ['Pork Loin Slices', 'Calamansi Juice / Lemon Juice', 'Soy Sauce', 'Yellow Onions', 'Garlic', 'Rice'],
-                description: 'Thinly sliced pork loin simmered tender in soy sauce and tanginess of calamansi juice, smothered with soft caramelized onions.',
-                toddlerTip: 'Cut pork into tiny dice and chop soft caramelized onions finely; mix into rice with sauce.',
-                servingIdea: 'Serve with fresh steamed Jasmine rice and sliced cucumbers.'
-            },
-            {
-                week: 2, id: 'w2_tue', day: 'Tuesday', title: 'Chicken Afritada', subtitle: 'Tomato Stew with Potatoes, Carrots & Green Peas', tag: 'Kid Friendly Stew', prepTime: '45 mins',
-                ingredientsList: ['Chicken Thighs/Legs', 'Tomato Sauce', 'Potatoes', 'Carrots', 'Bell Peppers', 'Green Peas', 'Garlic', 'Onion'],
-                description: 'Hearty home-style stew cooked in rich tomato sauce with soft potatoes, sweet carrots, and bright green peas.',
-                toddlerTip: 'Dice the stewed soft potatoes, carrots, and sweet peas. The natural tomato sweetness makes this an instant toddler favorite.',
-                servingIdea: 'Garnish with fresh parsley or extra peas before serving over rice.'
-            },
-            {
-                week: 2, id: 'w2_wed', day: 'Wednesday', title: 'Ginisang Sayote / Repolyo', subtitle: 'Sautéed Chayote Squash or Cabbage with Pork', tag: 'Light & Fast', prepTime: '25 mins',
-                ingredientsList: ['Chayote Squash or Cabbage', 'Minced Pork', 'Garlic', 'Onion', 'Tomatoes', 'Fish Sauce', 'Rice'],
-                description: 'Sautéed chayote squash or crisp shredded cabbage tossed with garlic, onions, and savory minced pork.',
-                toddlerTip: 'Chayote cooks down extremely soft and sweet. Easily spooned over rice for toddlers.',
-                servingIdea: 'Great paired with pan-fried tofu or grilled pork chops.'
-            },
-            {
-                week: 2, id: 'w2_thu', day: 'Thursday', title: 'Arroz Caldo', subtitle: 'Chicken Ginger Rice Porridge with Toasted Garlic', tag: 'Ultimate Comfort Food', prepTime: '40 mins',
-                ingredientsList: ['Chicken Thighs', 'Glutinous/Jasmine Rice', 'Fresh Ginger', 'Garlic', 'Onion', 'Boiled Eggs', 'Safflower/Kasubha (Optional)', 'Fish Sauce'],
-                description: 'Thick, heartwarming rice porridge infused with fresh ginger and chicken broth, topped with golden crispy garlic.',
-                toddlerTip: 'Naturally smooth and soft. Serve warm in a small bowl with chopped hardboiled egg yolk.',
-                servingIdea: 'Provide scallions, calamansi juice, and fried garlic chips for adult bowl toppings.'
-            },
-            {
-                week: 2, id: 'w2_fri', day: 'Friday', title: 'Bangus / Fish Sinigang or Pan-Fried Fish', subtitle: 'Sour Fish Soup or Pan-Seared Fish with Relish', tag: 'Seafood Special', prepTime: '30 mins',
-                ingredientsList: ['Bangus (Milkfish) or Tilapia', 'Sinigang Mix or Mangos & Tomatoes', 'Garlic', 'Rice', 'Bok Choy / Spinach'],
-                description: 'Choose between a warm tamarind fish soup (Sinigang) or crispy pan-seared fish with garlic fried rice and tomato relish.',
-                toddlerTip: 'Ensure all fish bones are thoroughly removed before flaking fish into soft rice.',
-                servingIdea: 'If pan-searing, serve with fresh tomato-mango salsa for adult crunch.'
-            },
-            {
-                week: 2, id: 'w2_sat', day: 'Saturday', title: 'Pork Mechado', subtitle: 'Melt-in-your-mouth Stew with Tomato Paste & Root Veggies', tag: 'Slow Simmered', prepTime: '55 mins',
-                ingredientsList: ['Pork Stew Meat', 'Tomato Paste/Sauce', 'Potatoes', 'Carrots', 'Soy Sauce', 'Calamansi Juice', 'Garlic', 'Onion'],
-                description: 'Classic Filipino pork stew simmered low and slow with tomato paste, soy sauce, and sweet citrus notes until meat turns meltingly tender.',
-                toddlerTip: 'Shred meat fibers easily with a fork and smash soft stewed carrots and potatoes.',
-                servingIdea: 'Pairs wonderfully with steamed broccoli or green beans on the side.'
-            },
-            {
-                week: 2, id: 'w2_sun', day: 'Sunday', title: 'Lumpiang Shanghai', subtitle: 'Crispy Filipino Spring Rolls with Pork & Carrots', tag: 'Weekend Favorite', prepTime: '45 mins',
-                ingredientsList: ['Ground Pork', 'Lumpia Wrapper / Spring Roll Wrappers', 'Finely Minced Carrots', 'Onion', 'Garlic', 'Egg', 'Sweet Chili or Banana Ketchup'],
-                description: 'Thin, golden spring rolls packed with seasoned ground pork and sweet minced carrots, fried crisp.',
-                toddlerTip: 'Cut rolls into small bite-sized rings. Serve with mild banana ketchup.',
-                servingIdea: 'Serve alongside Pancit noodles or fresh steamed Jasmine rice.'
-            },
+    <!-- TAB 3: GROCERY LIST -->
+    <div id="grocery" class="section">
+        <h2>Smart Grocery List (Clayton & Raleigh)</h2>
+        <p style="font-size:0.9rem; color:#666;">Sourced between Walmart Clayton & A&C Supermarket Raleigh with local substitutions.</p>
+        <div id="groceryContainer"></div>
+    </div>
 
-            // ================= WEEK 3 =================
-            {
-                week: 3, id: 'w3_mon', day: 'Monday', title: 'Beef Caldereta', subtitle: 'Rich Stew in Tomato & Liver/Peanut Butter Sauce', tag: 'Festive Classic', prepTime: '65 mins',
-                ingredientsList: ['Beef Chuck/Shank', 'Tomato Sauce', 'Liver Spread or Peanut Butter', 'Potatoes', 'Carrots', 'Bell Peppers', 'Garlic', 'Onion'],
-                description: 'Beef chunks slow-cooked until soft in a savory tomato sauce enriched with peanut butter or liver spread for deep flavor.',
-                toddlerTip: 'Peanut butter variant gives a rich creamy mild taste toddlers love. Shred beef finely and mash veggies.',
-                servingIdea: 'Garnish with shredded cheese or red bell peppers for color.'
-            },
-            {
-                week: 3, id: 'w3_tue', day: 'Tuesday', title: 'Chicken Adobo Flakes (Silog)', subtitle: 'Crispy Shredded Adobo with Garlic Rice & Fried Egg', tag: 'Crispy & Savory', prepTime: '25 mins',
-                ingredientsList: ['Shredded Cooked Chicken', 'Garlic', 'Eggs', 'Rice', 'Soy Sauce', 'Oil'],
-                description: 'Shredded chicken adobo pan-fried until crispy, served alongside fragrant garlic fried rice and a sunny egg.',
-                toddlerTip: 'Serve soft non-crispy chicken bits mixed with egg yolk and garlic rice for toddler safety.',
-                servingIdea: 'Serve with sliced fresh tomatoes or pickled papaya (Atchara).'
-            },
-            {
-                week: 3, id: 'w3_wed', day: 'Wednesday', title: 'Ginataang Gulay', subtitle: 'Squash, String Beans & Shrimp in Coconut Cream', tag: 'Creamy Veggies', prepTime: '35 mins',
-                ingredientsList: ['Kabocha Squash / Buttercup Squash', 'String Beans / Sitaw', 'Shrimp or Pork Bits', 'Coconut Milk / Cream', 'Garlic', 'Ginger', 'Onion'],
-                description: 'Vibrant golden squash cubes and green beans cooked down in silky, rich coconut milk with shrimp or pork.',
-                toddlerTip: 'The coconut-simmered squash melts instantly when pressed with a fork—naturally sweet and easy to eat.',
-                servingIdea: 'Drizzle with extra coconut cream and chili flakes for adults.'
-            },
-            {
-                week: 3, id: 'w3_thu', day: 'Thursday', title: 'Pork Sinigang na Sampalok', subtitle: 'Tamarind Sour Pork Ribs with Water Spinach', tag: 'Sour Stew', prepTime: '55 mins',
-                ingredientsList: ['Pork Ribs / Shoulder', 'Sinigang Tamarind Mix', 'Water Spinach / Kangkong or Spinach', 'Daikon Radish', 'Tomatoes', 'Onion'],
-                description: 'Comforting sour soup cooked with pork ribs, sliced radish, tomatoes, and leafy green water spinach.',
-                toddlerTip: 'Pork ribs get fall-off-the-bone tender. Serve meat and soft radish over warm rice.',
-                servingIdea: 'Pair with warm rice and a side sauce of fish sauce with crushed chili.'
-            },
-            {
-                week: 3, id: 'w3_fri', day: 'Friday', title: 'Pancit Canton', subtitle: 'Stir-Fried Wheat Noodles with Chicken & Garden Veggies', tag: 'Family Favorite', prepTime: '30 mins',
-                ingredientsList: ['Pancit Canton Wheat Noodles', 'Chicken Slices', 'Carrots', 'Cabbage', 'Snow Peas / Green Beans', 'Soy Sauce', 'Oyster Sauce', 'Garlic'],
-                description: 'Savory stir-fried wheat egg noodles tossed with tender chicken slices and crisp julienned vegetables.',
-                toddlerTip: 'Chop noodles into short pieces. Wheat noodles are soft and chewable for toddlers.',
-                servingIdea: 'Squeeze fresh calamansi or lemon juice over noodles.'
-            },
-            {
-                week: 3, id: 'w3_sat', day: 'Saturday', title: 'Longsilog / Tocilog', subtitle: 'Sweet Pork Tocino or Longganisa with Garlic Rice & Eggs', tag: 'Weekend Breakfast-for-Dinner', prepTime: '25 mins',
-                ingredientsList: ['Pork Tocino or Garlic Longganisa', 'Eggs', 'Garlic', 'Rice', 'Vinegar Dip'],
-                description: 'Sweet cured pork (Tocino) or garlic sausage links caramelized in a pan, served with garlic rice and fried eggs.',
-                toddlerTip: 'Cut sweet tocino into small soft dice. Pairs great with soft scrambled egg.',
-                servingIdea: 'Serve with spicy vinegar dip for adults and fresh sliced tomatoes.'
-            },
-            {
-                week: 3, id: 'w3_sun', day: 'Sunday', title: 'Bulalo (Beef Marrow Soup)', subtitle: 'Rich Beef Marrow & Shank Soup with Corn & Bok Choy', tag: 'Weekend Feast', prepTime: '90 mins',
-                ingredientsList: ['Beef Shank with Marrow Bone', 'Cabbage / Bok Choy', 'Corn on Cob', 'Potatoes', 'Peppercorns', 'Onion', 'Rice'],
-                description: 'Slow-simmered beef bone marrow and shank soup yielding a deeply flavorful, gelatinous clear broth.',
-                toddlerTip: 'Super rich broth! Serve shredded tender beef shank and sweet boiled corn kernels mashed with rice.',
-                servingIdea: 'Serve with fish sauce and calamansi juice on the side.'
-            },
+    <!-- TAB 4: INVENTORY & AI RECIPE EXPLORER -->
+    <div id="inventory" class="section">
+        <h2>Pantry Inventory & Global AI Recipe Search</h2>
+        <p style="font-size:0.9rem; color:#666;">Add what you have at home. Then use the AI search below to look up non-Filipino recipes — the AI will check your inventory and tell you what you already have vs. what to buy!</p>
+        
+        <div class="card">
+            <h3>My Fridge & Pantry Inventory</h3>
+            <div class="inventory-input-group">
+                <input type="text" id="newItemInput" placeholder="Add item (e.g., garlic, soy sauce, chicken)">
+                <button class="btn" onclick="addInventoryItem()">Add</button>
+            </div>
+            <div id="inventoryTags"></div>
+        </div>
 
-            // ================= WEEK 4 =================
-            {
-                week: 4, id: 'w4_mon', day: 'Monday', title: 'Pinakbet', subtitle: 'Sautéed Mixed Veggies with Pork & Shrimp Paste', tag: 'Nutritious Harvest', prepTime: '40 mins',
-                ingredientsList: ['Kabocha Squash', 'Eggplant', 'Okra', 'String Beans', 'Pork Belly Bits', 'Shrimp Paste (Bagoong Alamang)', 'Garlic', 'Onion'],
-                description: 'Traditional northern vegetable dish of squash, eggplant, okra, and green beans sautéed with pork bits and bagoong.',
-                toddlerTip: 'Use minimal bagoong for toddler portion or scoop out soft squash and eggplant before adding strong shrimp paste.',
-                servingIdea: 'Serve alongside pan-fried fish or grilled pork chops.'
-            },
-            {
-                week: 4, id: 'w4_tue', day: 'Tuesday', title: 'Chicken Inasal', subtitle: 'Grilled Lemongrass & Calamansi Marinated Chicken', tag: 'Grilled Specialty', prepTime: '45 mins',
-                ingredientsList: ['Chicken Thighs', 'Lemongrass', 'Calamansi / Lemon Juice', 'Garlic', 'Ginger', 'Annatto Oil (Achiote)', 'Rice'],
-                description: 'Chicken marinated in lemongrass, garlic, calamansi, and vinegar, basted with golden annatto oil while grilled or broiled.',
-                toddlerTip: 'Remove skin and shred tender marinated chicken thigh meat over rice.',
-                servingIdea: 'Drizzle rice with orange annatto oil and serve with seasoned vinegar.'
-            },
-            {
-                week: 4, id: 'w4_wed', day: 'Wednesday', title: 'Pork Dinuguan & Plain Adobo', subtitle: 'Savory Pork Stew with Child-Friendly Mild Pork Option', tag: 'Dual Prep Night', prepTime: '50 mins',
-                ingredientsList: ['Pork Shoulder/Belly', 'Pork Blood (Optional for adults)', 'Vinegar', 'Garlic', 'Green Peppers', 'Soy Sauce', 'Rice'],
-                description: 'Deeply savory pork blood stew for adults, with a portion of pork set aside for mild soy-vinegar pork adobo for toddlers.',
-                toddlerTip: 'Serve the plain mild pork adobo portion with rice and soft boiled egg.',
-                servingIdea: 'Serve adults with steamed rice cakes (Puto) or warm Jasmine rice.'
-            },
-            {
-                week: 4, id: 'w4_thu', day: 'Thursday', title: 'Chicken Sopas', subtitle: 'Creamy Chicken Macaroni Soup with Vegetables', tag: 'Comfort In A Bowl', prepTime: '30 mins',
-                ingredientsList: ['Elbow Macaroni', 'Shredded Chicken Breast', 'Evaporated Milk', 'Carrots', 'Cabbage', 'Chicken Broth', 'Garlic', 'Onion'],
-                description: 'Filipino-style creamy macaroni soup loaded with shredded chicken, diced carrots, cabbage, and rich evaporated milk broth.',
-                toddlerTip: 'Macaroni elbows and shredded chicken in mild milk broth are extremely easy for toddlers to eat with a spoon.',
-                servingIdea: 'Top with chopped hard-boiled egg or scallions.'
-            },
-            {
-                week: 4, id: 'w4_fri', day: 'Friday', title: 'Fried Bangus / Salmon Belly', subtitle: 'Marinated Fish with Garlic Rice & Fresh Tomatoes', tag: 'Crispy Seafood', prepTime: '25 mins',
-                ingredientsList: ['Bangus (Milkfish) or Salmon Belly', 'Garlic', 'Vinegar', 'Black Pepper', 'Rice', 'Fresh Tomatoes'],
-                description: 'Fish marinated in garlic and vinegar, pan-fried to golden perfection, served with garlic fried rice and ripe sliced tomatoes.',
-                toddlerTip: 'Salmon belly offers rich healthy omega-3 fats and soft texture easy to mash.',
-                servingIdea: 'Dip in garlic-vinegar sauce or spicy soy-calamansi sauce.'
-            },
-            {
-                week: 4, id: 'w4_sat', day: 'Saturday', title: 'Beef Kare-Kare', subtitle: 'Savory Beef Stew in Peanut Sauce with Vegetables', tag: 'Weekend Feast', prepTime: '70 mins',
-                ingredientsList: ['Beef Shank/Oxtail', 'Peanut Butter', 'Toasted Rice Flour', 'Eggplant', 'String Beans', 'Bok Choy', 'Bagoong (Shrimp Paste)'],
-                description: 'Luxurious beef stew in thick, rich savory peanut sauce, served with steamed vegetables and bagoong on the side.',
-                toddlerTip: 'The thick peanut sauce over soft tender beef and eggplants is sweet and mild for little ones.',
-                servingIdea: 'Must be served with a small side of savory bagoong (shrimp paste) for adult mixing.'
-            },
-            {
-                week: 4, id: 'w4_sun', day: 'Sunday', title: 'Sizzling Pork Sisig', subtitle: 'Finely Chopped Seasoned Pork with Calamansi & Onions', tag: 'Weekend Fiesta', prepTime: '40 mins',
-                ingredientsList: ['Pork Shoulder / Pork Belly', 'Yellow Onions', 'Calamansi Juice / Lemon', 'Soy Sauce', 'Mayonnaise or Egg', 'Green Chilies (Optional)'],
-                description: 'Finely chopped seared pork tossed with sweet yellow onions, calamansi juice, and pepper.',
-                toddlerTip: 'Scoop out non-spicy, finely chopped pork before adding chilies and mix thoroughly with rice.',
-                servingIdea: 'Serve on a hot skillet topped with a raw egg and sliced red chilies.'
-            }
-        ];
+        <div class="card ai-box">
+            <h3>🤖 Global Cuisine AI Assistant</h3>
+            <p style="font-size:0.9rem;">Search for any non-Filipino recipe (e.g., <em>Thai Green Curry</em>, <em>Mexican Tacos</em>, <em>Italian Lasagna</em>):</p>
+            <div class="inventory-input-group">
+                <input type="text" id="aiRecipeQuery" placeholder="Enter recipe name...">
+                <button class="btn" style="background:#3498db;" onclick="searchGlobalRecipe()">Ask AI</button>
+            </div>
+            <div id="aiLoading" style="display:none; font-style:italic; color:#666;">Checking inventory & generating toddler-friendly recipe...</div>
+            <div id="aiResultContainer"></div>
+        </div>
+    </div>
+</div>
 
-        const GROCERY_CATEGORIES = [
-            { id: 'meat', name: 'Meat, Poultry & Seafood', icon: 'fa-drumstick-bite' },
-            { id: 'produce', name: 'Fresh Produce', icon: 'fa-carrot' },
-            { id: 'pantry', name: 'Pantry, Grains & Noodles', icon: 'fa-box' },
-            { id: 'sauces', name: 'Sauces, Oils & Spices', icon: 'fa-bottle-droplet' },
-            { id: 'dairy', name: 'Dairy & Eggs', icon: 'fa-egg' }
-        ];
+<script>
+    // Data Structure for 4 Weeks
+    const mealPlans = [
+        {
+            week: "Week 1: Comfort Classics & Stews",
+            weekNum: 1,
+            meals: [
+                { day: "Monday", name: "Chicken Tinola", tip: "Ginger chicken soup with green papaya/chayote & spinach; warm and soothing broth for kids." },
+                { day: "Tuesday", name: "Pork Adobo with Garlic Fried Rice & Boiled Egg", tip: "Shred pork fine for toddlers; tender soy-vinegar simmer." },
+                { day: "Wednesday", name: "Ginisang Munggo", tip: "Protein-rich sautéed mung beans with spinach; easily mashed for toddlers." },
+                { day: "Thursday", name: "Beef Nilaga", tip: "Clear beef shank soup with tender meat and soft potatoes." },
+                { day: "Friday", name: "Pancit Bihon Guisado", tip: "Sautéed rice noodles with shredded chicken and finely julienned carrots/cabbage." },
+                { day: "Saturday", name: "Sinigang na Baboy", tip: "Pork sour soup with radish and soft veggies over warm rice." },
+                { day: "Sunday", name: "Tortang Talong", tip: "Roasted eggplant omelet; extremely soft and loved by toddlers." }
+            ]
+        },
+        {
+            week: "Week 2: Savory Stir-Fries & Bowls",
+            weekNum: 2,
+            meals: [
+                { day: "Monday", name: "Pork Bistek Tagalog", tip: "Thinly sliced pork loin in soy-calamansi sauce with soft caramelized onions." },
+                { day: "Tuesday", name: "Chicken Afritada", tip: "Chicken stew with potatoes, carrots, bell peppers, and peas in rich tomato sauce." },
+                { day: "Wednesday", name: "Ginisang Sayote or Repolyo", tip: "Sautéed chayote or cabbage with minced pork over rice." },
+                { day: "Thursday", name: "Arroz Caldo", tip: "Chicken & ginger rice porridge topped with toasted garlic and boiled egg." },
+                { day: "Friday", name: "Bangus / Tilapia Sinigang or Pan-Fried Fish", tip: "Served with garlic rice and tomato-mango relish." },
+                { day: "Saturday", name: "Pork Mechado", tip: "Slow-simmered tender pork stew with tomato paste and potatoes." },
+                { day: "Sunday", name: "Lumpiang Shanghai", tip: "Filipino spring rolls with minced pork and carrots; serve with mild sweet chili." }
+            ]
+        },
+        {
+            week: "Week 3: Hearty Home-Style Favorites",
+            weekNum: 3,
+            meals: [
+                { day: "Monday", name: "Beef Caldereta", tip: "Beef chunks in tomato and peanut butter/liver-paste base with potatoes." },
+                { day: "Tuesday", name: "Chicken Adobo Flakes", tip: "Shredded leftover adobo crisped in a pan with garlic rice and fried eggs." },
+                { day: "Wednesday", name: "Ginataang Gulay", tip: "Squash, string beans, and shrimp in coconut milk; very soft for toddlers." },
+                { day: "Thursday", name: "Pork Sinigang", tip: "Sour tamarind soup with pork ribs and water spinach." },
+                { day: "Friday", name: "Pancit Canton", tip: "Wheat stir-fry noodles with chicken slices and mixed vegetables." },
+                { day: "Saturday", name: "Longsilog / Tocilog", tip: "Sweet pork tocino or longganisa links with garlic rice and sunny-side-up eggs." },
+                { day: "Sunday", name: "Bulalo", tip: "Beef marrow and shank soup with baby bok choy and corn." }
+            ]
+        },
+        {
+            week: "Week 4: Quick Weeknights & Family Feasts",
+            weekNum: 4,
+            meals: [
+                { day: "Monday", name: "Pinakbet", tip: "Mixed veggies sautéed with shrimp paste and pork belly." },
+                { day: "Tuesday", name: "Chicken Inasal / Grilled Thighs", tip: "Calamansi and lemongrass marinated grilled chicken." },
+                { day: "Wednesday", name: "Pork Dinuguan (or Adobo/Fish for kids)", tip: "Savory pork blood stew for adults; plain adobo for toddlers." },
+                { day: "Thursday", name: "Sopas", tip: "Filipino macaroni soup with shredded chicken, carrots, and evaporated milk." },
+                { day: "Friday", name: "Fried Bangus or Salmon Belly", tip: "Daing na bangus with garlic rice and fresh tomatoes." },
+                { day: "Saturday", name: "Beef Kare-Kare", tip: "Oxtail/shank in peanut sauce served with bagoong on the side." },
+                { day: "Sunday", name: "Pork Sisig", tip: "Finely chopped seasoned pork; serve mild portions mixed into rice for kids." }
+            ]
+        }
+    ];
 
-        // MASTER GROCERY LIST INCLUDING ALL 4 WEEKS INGREDIENTS WITH NC SOURCING
-        const GROCERY_ITEMS = [
-            // Meat & Seafood
-            { id: 'g1', weeks: [1], category: 'meat', name: 'Chicken Bone-In Cut / Soup Cuts', qty: '2 lbs', store: 'both', walmartAlt: null, recipes: ['Chicken Tinola'] },
-            { id: 'g2', weeks: [1, 2, 3, 4], category: 'meat', name: 'Chicken Breast / Thigh Meat (Boneless)', qty: '3 to 4 lbs', store: 'both', walmartAlt: null, recipes: ['Pancit Bihon', 'Arroz Caldo', 'Pancit Canton', 'Inasal', 'Sopas'] },
-            { id: 'g3', weeks: [1, 2, 3, 4], category: 'meat', name: 'Pork Shoulder, Butt, or Belly', qty: '6 to 8 lbs', store: 'both', walmartAlt: null, recipes: ['Pork Adobo', 'Sinigang', 'Bistek', 'Mechado', 'Shanghai', 'Pinakbet', 'Sisig'] },
-            { id: 'g4', weeks: [1, 3], category: 'meat', name: 'Pork Stew Ribs / Pork Cutlets', qty: '3 to 4 lbs', store: 'both', walmartAlt: null, recipes: ['Sinigang na Baboy'] },
-            { id: 'g5', weeks: [1, 2], category: 'meat', name: 'Ground Pork', qty: '1.5 lbs', store: 'both', walmartAlt: null, recipes: ['Ginisang Munggo', 'Ginisang Sayote', 'Lumpiang Shanghai'] },
-            { id: 'g6', weeks: [1, 3, 4], category: 'meat', name: 'Beef Shank or Beef Stew Cut', qty: '5 to 6 lbs', store: 'both', walmartAlt: null, recipes: ['Beef Nilaga', 'Caldereta', 'Bulalo', 'Beef Kare-Kare'] },
-            { id: 'g7', weeks: [2, 4], category: 'meat', name: 'Bangus (Whole/Split Milkfish) or Salmon Belly', qty: '2 fish / 1.5 lbs', store: 'ac', walmartAlt: 'Tilapia Fillets or Salmon Belly (Walmart Seafood Dept)', recipes: ['Fish Sinigang', 'Fried Bangus / Salmon'] },
-            { id: 'g8', weeks: [3], category: 'meat', name: 'Shrimp (Medium Peeled & Deveined)', qty: '1 lb', store: 'both', walmartAlt: null, recipes: ['Ginataang Gulay'] },
-            { id: 'g9', weeks: [3], category: 'meat', name: 'Pork Tocino or Garlic Longganisa Links', qty: '1-2 packs', store: 'ac', walmartAlt: 'Thick cut sweet bacon or Italian garlic sausage links', recipes: ['Longsilog / Tocilog'] },
+    let inventory = JSON.parse(localStorage.getItem('mealPlannerInventory')) || ['garlic', 'onion', 'soy sauce', 'rice', 'oil'];
+    let customMeals = JSON.parse(localStorage.getItem('customMealSchedule')) || [];
 
-            // Produce
-            { id: 'g10', weeks: [1, 3, 4], category: 'produce', name: 'Chinese Long Eggplants', qty: '6 to 8 medium', store: 'ac', walmartAlt: 'Globe Eggplants (sliced before roasting/cooking)', recipes: ['Tortang Talong', 'Sinigang', 'Pinakbet', 'Kare-Kare'] },
-            { id: 'g11', weeks: [1, 2], category: 'produce', name: 'Chayote Squash or Green Papaya', qty: '3 whole', store: 'both', walmartAlt: 'Chayote Squash (stocked at Walmart Clayton) or Zucchini', recipes: ['Chicken Tinola', 'Ginisang Sayote'] },
-            { id: 'g12', weeks: [1, 3], category: 'produce', name: 'Malunggay (Moringa) / Water Spinach (Kangkong)', qty: '3 bunches', store: 'ac', walmartAlt: 'Baby Spinach or Fresh Kale (Walmart Produce section)', recipes: ['Tinola', 'Munggo', 'Pork Sinigang'] },
-            { id: 'g13', weeks: [1, 2, 3, 4], category: 'produce', name: 'Bok Choy / Baby Bok Choy', qty: '4 to 5 heads', store: 'both', walmartAlt: 'Baby Bok Choy or Napa Cabbage', recipes: ['Sinigang', 'Bulalo', 'Kare-Kare'] },
-            { id: 'g14', weeks: [1, 2, 3, 4], category: 'produce', name: 'Green Cabbage', qty: '2 heads', store: 'both', walmartAlt: null, recipes: ['Nilaga', 'Pancit Bihon', 'Repolyo', 'Pancit Canton', 'Sopas'] },
-            { id: 'g15', weeks: [1, 3], category: 'produce', name: 'Daikon Radish', qty: '2 medium', store: 'ac', walmartAlt: 'White Turnips or Extra Cabbage', recipes: ['Sinigang na Baboy'] },
-            { id: 'g16', weeks: [1, 3, 4], category: 'produce', name: 'Yardlong Green Beans (Sitaw) or Okra', qty: '2 small bundles', store: 'ac', walmartAlt: 'Regular Fresh Green Beans & Frozen Okra', recipes: ['Sinigang', 'Ginataang Gulay', 'Pinakbet', 'Kare-Kare'] },
-            { id: 'g17', weeks: [1, 2, 3, 4], category: 'produce', name: 'Carrots', qty: '2 bags (2 lbs)', store: 'both', walmartAlt: null, recipes: ['Pancit', 'Afritada', 'Mechado', 'Shanghai', 'Caldereta', 'Sopas'] },
-            { id: 'g18', weeks: [1, 2, 4], category: 'produce', name: 'Celery & Bell Peppers', qty: '1 stalk / 3 peppers', store: 'both', walmartAlt: null, recipes: ['Pancit Bihon', 'Afritada', 'Caldereta', 'Sopas'] },
-            { id: 'g19', weeks: [1, 2, 3, 4], category: 'produce', name: 'Potatoes (Yellow or Russet)', qty: '5 lbs bag', store: 'both', walmartAlt: null, recipes: ['Nilaga', 'Afritada', 'Mechado', 'Caldereta', 'Bulalo'] },
-            { id: 'g20', weeks: [1, 3], category: 'produce', name: 'Corn on the Cob', qty: '4 to 6 ears', store: 'both', walmartAlt: null, recipes: ['Beef Nilaga', 'Bulalo'] },
-            { id: 'g21', weeks: [1, 2, 3, 4], category: 'produce', name: 'Kabocha / Buttercup Squash', qty: '1 medium squash', store: 'both', walmartAlt: 'Kabocha Squash or Butternut Squash (Walmart)', recipes: ['Ginataang Gulay', 'Pinakbet'] },
-            { id: 'g22', weeks: [1, 2, 3, 4], category: 'produce', name: 'Garlic & Yellow Onions', qty: '5 heads garlic / 2 bags onions', store: 'both', walmartAlt: null, recipes: ['Base sauté for all 28 recipes'] },
-            { id: 'g23', weeks: [1, 2, 4], category: 'produce', name: 'Fresh Ginger Root & Lemongrass', qty: '2 large ginger pieces / 2 stalks lemongrass', store: 'both', walmartAlt: 'Fresh Ginger (Walmart); Lemongrass paste or extra lemon peel', recipes: ['Tinola', 'Arroz Caldo', 'Inasal', 'Ginataang Gulay'] },
-            { id: 'g24', weeks: [2, 4], category: 'produce', name: 'Calamansi Fruit or Fresh Lemons', qty: '1 lb fresh lemons or calamansi bag', store: 'ac', walmartAlt: 'Fresh Lemons or Bottled Lemon/LIME juice (Walmart)', recipes: ['Bistek', 'Inasal', 'Sisig', 'Arroz Caldo'] },
+    function switchTab(tabId) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        if (tabId === 'grocery') renderGroceryList();
+        if (tabId === 'inventory') renderInventory();
+        if (tabId === 'reorganizer') renderCustomMeals();
+    }
 
-            // Pantry
-            { id: 'g25', weeks: [1], category: 'pantry', name: 'Pancit Bihon (Rice Noodles)', qty: '1 pack (16oz)', store: 'ac', walmartAlt: 'Thin Rice Vermicelli Sticks (Walmart Asian Aisle)', recipes: ['Pancit Bihon'] },
-            { id: 'g26', weeks: [3], category: 'pantry', name: 'Pancit Canton (Wheat Stir-Fry Noodles)', qty: '1 pack (16oz)', store: 'ac', walmartAlt: 'Chow Mein / Ramen Wheat Noodles (Walmart)', recipes: ['Pancit Canton'] },
-            { id: 'g27', weeks: [1, 2], category: 'pantry', name: 'Lumpia / Spring Roll Wrappers', qty: '1 pack (25-30 sheets)', store: 'ac', walmartAlt: 'Egg Roll / Spring Roll Wrappers (Walmart Produce/Refrigerated)', recipes: ['Lumpiang Shanghai'] },
-            { id: 'g28', weeks: [1], category: 'pantry', name: 'Dried Green Mung Beans (Monggo)', qty: '1 lb bag', store: 'both', walmartAlt: 'Green Mung Beans (Organic aisle) or Yellow Split Peas', recipes: ['Ginisang Munggo'] },
-            { id: 'g29', weeks: [1, 2, 3, 4], category: 'pantry', name: 'Jasmine White Rice', qty: '10 to 20 lbs bag', store: 'both', walmartAlt: null, recipes: ['Daily serving & Sinangag'] },
-            { id: 'g30', weeks: [4], category: 'pantry', name: 'Elbow Macaroni', qty: '1 box (16oz)', store: 'both', walmartAlt: null, recipes: ['Chicken Sopas'] },
-            { id: 'g31', weeks: [3], category: 'pantry', name: 'Unsweetened Coconut Milk / Cream', qty: '2 cans (13.5 oz)', store: 'both', walmartAlt: 'Thai Kitchen Coconut Milk (Walmart Asian aisle)', recipes: ['Ginataang Gulay'] },
-            { id: 'g32', weeks: [3, 4], category: 'pantry', name: 'Creamy Peanut Butter & Toasted Rice Flour', qty: '1 jar PB / 0.5 lb rice flour', store: 'both', walmartAlt: 'Skippy Creamy Peanut Butter + Cornstarch/Rice Flour', recipes: ['Beef Caldereta', 'Beef Kare-Kare'] },
-            { id: 'g33', weeks: [2, 3], category: 'pantry', name: 'Tomato Paste & Tomato Sauce', qty: '3 cans sauce / 2 small cans paste', store: 'both', walmartAlt: null, recipes: ['Afritada', 'Mechado', 'Caldereta'] },
-
-            // Sauces & Seasonings
-            { id: 'g34', weeks: [1, 2, 3, 4], category: 'sauces', name: 'Filipino Soy Sauce (Datu Puti / Silver Swan / Kikkoman)', qty: '1 large bottle', store: 'both', walmartAlt: 'Kikkoman or Great Value Soy Sauce', recipes: ['Adobo', 'Bistek', 'Pancit', 'Mechado', 'Sisig'] },
-            { id: 'g35', weeks: [1, 2, 3, 4], category: 'sauces', name: 'Cane Vinegar or White Distilled Vinegar', qty: '1 bottle', store: 'both', walmartAlt: 'White Distilled Vinegar or Apple Cider Vinegar', recipes: ['Adobo', 'Sinigang dip', 'Inasal', 'Tocilog'] },
-            { id: 'g36', weeks: [1, 2, 3], category: 'sauces', name: 'Sinigang Tamarind Soup Mix (Knorr / Mama Sita)', qty: '3 to 4 packets', store: 'ac', walmartAlt: 'Knorr Tamarind Mix or Lemon Juice + Broth', recipes: ['Sinigang na Baboy', 'Fish Sinigang'] },
-            { id: 'g37', weeks: [1, 2, 3, 4], category: 'sauces', name: 'Fish Sauce (Patis)', qty: '1 bottle', store: 'both', walmartAlt: 'Thai Kitchen or Badia Fish Sauce (Walmart Asian Aisle)', recipes: ['Tinola', 'Nilaga', 'Munggo', 'Arroz Caldo', 'Bulalo'] },
-            { id: 'g38', weeks: [4], category: 'sauces', name: 'Sautéed Shrimp Paste (Bagoong Alamang)', qty: '1 small jar', store: 'ac', walmartAlt: 'Anchovy Paste or Extra Fish Sauce + Bacon bits', recipes: ['Pinakbet', 'Kare-Kare'] },
-            { id: 'g39', weeks: [1, 2, 4], category: 'sauces', name: 'Banana Ketchup or Sweet Chili Sauce', qty: '1 bottle', store: 'ac', walmartAlt: 'Heinz Tomato Ketchup or Sweet Chili Sauce (Walmart)', recipes: ['Tortang Talong', 'Shanghai'] },
-            { id: 'g40', weeks: [1, 2, 3, 4], category: 'sauces', name: 'Bay Leaves, Black Peppercorns & Cooking Oil', qty: 'Pantry Staples', store: 'both', walmartAlt: null, recipes: ['General cooking base'] },
-
-            // Dairy & Eggs
-            { id: 'g41', weeks: [1, 2, 3, 4], category: 'dairy', name: 'Eggs (Large)', qty: '2 to 3 dozen', store: 'both', walmartAlt: null, recipes: ['Tortang Talong', 'Boiled Eggs for Adobo/Arroz Caldo', 'Silog meals', 'Shanghai'] },
-            { id: 'g42', weeks: [4], category: 'dairy', name: 'Evaporated Milk', qty: '1 can (12 oz)', store: 'both', walmartAlt: null, recipes: ['Chicken Sopas'] }
-        ];
-
-        // --- STATE MANAGEMENT ---
-        let activeWeek = 1; // 1, 2, 3, 4, or 'all'
-        let selectedDayId = 'w1_mon';
-        let checkedItems = JSON.parse(localStorage.getItem('ph_meal_checked_v2')) || {};
-        let activeStoreFilter = 'all'; // 'all', 'walmart', 'ac'
-        let activeCategoryFilter = 'all';
-
-        // --- INITIALIZATION ---
-        window.onload = function() {
-            selectWeek(1);
-            renderCategoryPills();
-            renderGroceryList();
-            updateProgress();
-        };
-
-        // --- NAVIGATION LOGIC ---
-        function switchTab(tab) {
-            const plannerBtn = document.getElementById('tab-planner');
-            const groceryBtn = document.getElementById('tab-grocery');
-            const plannerView = document.getElementById('view-planner');
-            const groceryView = document.getElementById('view-grocery');
-
-            if (tab === 'planner') {
-                plannerBtn.className = 'flex-1 sm:flex-none py-2 px-5 text-center rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center space-x-2 bg-terracotta-500 text-white shadow-sm';
-                groceryBtn.className = 'flex-1 sm:flex-none py-2 px-5 text-center rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center space-x-2 text-gray-600 hover:text-terracotta-600';
-                plannerView.classList.remove('hidden');
-                groceryView.classList.add('hidden');
-            } else {
-                groceryBtn.className = 'flex-1 sm:flex-none py-2 px-5 text-center rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center space-x-2 bg-terracotta-500 text-white shadow-sm';
-                plannerBtn.className = 'flex-1 sm:flex-none py-2 px-5 text-center rounded-lg font-semibold text-sm transition-all duration-200 flex items-center justify-center space-x-2 text-gray-600 hover:text-terracotta-600';
-                groceryView.classList.remove('hidden');
-                plannerView.classList.add('hidden');
-            }
+    function renderMealPlans(filter = 'all') {
+        const container = document.getElementById('mealPlanContainer');
+        container.innerHTML = '';
+        
+        let filtered = mealPlans;
+        if (filter !== 'all') {
+            filtered = mealPlans.filter(w => w.weekNum == filter);
         }
 
-        function selectWeek(weekNum) {
-            activeWeek = weekNum;
+        filtered.forEach(week => {
+            let html = `<div class="card" style="border-left-color: var(--primary);">
+                <h2 style="color:var(--primary); font-size:1.2rem; margin-top:0;">${week.week}</h2>`;
+            week.meals.forEach(m => {
+                html += `<div style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:8px;">
+                    <strong>${m.day}:</strong> ${m.name}
+                    <div class="toddler-tip">👶 Toddler Tip: ${m.tip}</div>
+                </div>`;
+            });
+            html += `</div>`;
+            container.innerHTML += html;
+        });
 
-            // Update week buttons UI
-            [1, 2, 3, 4, 'all'].forEach(w => {
-                const btn = document.getElementById(`week-btn-${w}`);
-                if (btn) {
-                    if (w === weekNum) {
-                        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-terracotta-700 shadow-sm whitespace-nowrap';
-                    } else {
-                        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-terracotta-600 transition-all whitespace-nowrap';
-                    }
+        // Render custom/next month meals if any
+        if (customMeals.length > 0) {
+            let customHtml = `<div class="card" style="border-left-color: var(--accent);">
+                <h2 style="color:var(--accent); font-size:1.2rem; margin-top:0;">✨ Custom / Next Month Scheduled Meals</h2>`;
+            customMeals.forEach((cm, idx) => {
+                customHtml += `<div style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:8px;">
+                    <strong>[${cm.week} - ${cm.day}]:</strong> ${cm.name}
+                    <div class="toddler-tip">👶 Toddler Tip: ${cm.tip}</div>
+                    <button onclick="deleteCustomMeal(${idx})" style="background:#c0392b; color:white; border:none; padding:2px 6px; border-radius:4px; font-size:0.8rem; cursor:pointer; margin-top:5px;">Remove</button>
+                </div>`;
+            });
+            customHtml += `</div>`;
+            container.innerHTML += customHtml;
+        }
+    }
+
+    function filterWeeks() {
+        const val = document.getElementById('weekFilter').value;
+        renderMealPlans(val);
+    }
+
+    function addCustomMeal() {
+        const week = document.getElementById('customWeek').value;
+        const day = document.getElementById('customDay').value;
+        const name = document.getElementById('customMealName').value;
+        const tip = document.getElementById('customToddlerTip').value;
+        if (!name) return alert('Please enter a meal name.');
+        
+        customMeals.push({ week, day, name, tip: tip || 'Adjust seasoning to taste for toddlers.' });
+        localStorage.setItem('customMealSchedule', JSON.stringify(customMeals));
+        document.getElementById('customMealName').value = '';
+        document.getElementById('customToddlerTip').value = '';
+        renderCustomMeals();
+        renderMealPlans();
+        alert('Meal added to schedule successfully!');
+    }
+
+    function renderCustomMeals() {
+        const container = document.getElementById('customMealsList');
+        if (customMeals.length === 0) {
+            container.innerHTML = '<p style="color:#666;">No custom meals added yet.</p>';
+            return;
+        }
+        let html = `<h3>Current Custom Schedule (${customMeals.length})</h3>`;
+        customMeals.forEach((cm, idx) => {
+            html += `<div class="card">
+                <strong>${cm.week} - ${cm.day}</strong>: ${cm.name}
+                <div class="toddler-tip">Tip: ${cm.tip}</div>
+                <button class="btn" style="background:#c0392b; padding:4px 10px; font-size:0.8rem; margin-top:8px;" onclick="deleteCustomMeal(${idx})">Delete</button>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function deleteCustomMeal(idx) {
+        customMeals.splice(idx, 1);
+        localStorage.setItem('customMealSchedule', JSON.stringify(customMeals));
+        renderCustomMeals();
+        renderMealPlans();
+    }
+
+    function renderInventory() {
+        const container = document.getElementById('inventoryTags');
+        container.innerHTML = '';
+        inventory.forEach((item, idx) => {
+            container.innerHTML += `<span class="inventory-tag">${item} <button onclick="removeInventoryItem(${idx})">&times;</button></span>`;
+        });
+    }
+
+    function addInventoryItem() {
+        const input = document.getElementById('newItemInput');
+        if (input.value.trim()) {
+            inventory.push(input.value.trim().toLowerCase());
+            localStorage.setItem('mealPlannerInventory', JSON.stringify(inventory));
+            input.value = '';
+            renderInventory();
+        }
+    }
+
+    function removeInventoryItem(idx) {
+        inventory.splice(idx, 1);
+        localStorage.setItem('mealPlannerInventory', JSON.stringify(inventory));
+        renderInventory();
+    }
+
+    function renderGroceryList() {
+        const container = document.getElementById('groceryContainer');
+        container.innerHTML = `
+            <div class="grocery-category">🥩 Meat & Poultry</div>
+            <div class="grocery-item"><input type="checkbox"><span>Chicken Bone-In / Thighs (2 lbs)</span></div>
+            <div class="grocery-item"><input type="checkbox"><span>Pork Shoulder / Belly (2-3 lbs)</span></div>
+            <div class="grocery-item"><input type="checkbox"><span>Beef Shank or Stew Meat (2 lbs)</span></div>
+            
+            <div class="grocery-category">🥬 Produce (Walmart Clayton / A&C Raleigh)</div>
+            <div class="grocery-item"><input type="checkbox"><span>Eggplants (4-5 medium)</span><span class="sub-note">A&C: Long Asian eggplant | Walmart: Globe eggplant</span></div>
+            <div class="grocery-item"><input type="checkbox"><span>Chayote Squash / Green Papaya (2 whole)</span><span class="sub-note">Walmart: Chayote | A&C: Green Papaya</span></div>
+            <div class="grocery-item"><input type="checkbox"><span>Baby Spinach or Malunggay (2 bunches)</span><span class="sub-note">A&C: Fresh Moringa | Walmart: Baby Spinach</span></div>
+            <div class="grocery-item"><input type="checkbox"><span>Bok Choy & Green Cabbage</span></div>
+            <div class="grocery-item"><input type="checkbox"><span>Garlic, Onions, Ginger Root</span></div>
+
+            <div class="grocery-category">🌾 Pantry & Seasonings</div>
+            <div class="grocery-item"><input type="checkbox"><span>Pancit Bihon / Noodles & Mung Beans</span></div>
+            <div class="grocery-item"><input type="checkbox"><span>Soy Sauce & Cane Vinegar</span><span class="sub-note">A&C: Datu Puti / Silver Swan | Walmart: Kikkoman</span></div>
+            <div class="grocery-item"><input type="checkbox"><span>Sinigang Tamarind Soup Mix Packets</span></div>
+        `;
+    }
+
+    function searchGlobalRecipe() {
+        const query = document.getElementById('aiRecipeQuery').value.trim();
+        if (!query) return alert('Please enter a recipe name.');
+        
+        document.getElementById('aiLoading').style.display = 'block';
+        document.getElementById('aiResultContainer').innerHTML = '';
+
+        setTimeout(() => {
+            document.getElementById('aiLoading').style.display = 'none';
+            
+            // AI Simulation & Inventory Cross-Check
+            let sampleIngredients = ['chicken breast', 'bell pepper', 'coconut milk', 'curry paste', 'garlic', 'onion', 'rice'];
+            let haveList = [];
+            let buyList = [];
+
+            sampleIngredients.forEach(ing => {
+                let found = inventory.some(inv => inv.includes(ing) || ing.includes(inv));
+                if (found) {
+                    haveList.push(ing);
+                } else {
+                    buyList.push(ing);
                 }
             });
 
-            // Update Banner
-            const theme = WEEK_THEMES[weekNum];
-            document.getElementById('banner-week-tag').innerText = theme.tag;
-            document.getElementById('banner-week-title').innerText = theme.title;
-            
-            // Set active default day for selected week
-            if (weekNum === 'all') {
-                selectedDayId = 'w1_mon';
-            } else {
-                const firstDayOfWeek = MEAL_PLAN.find(d => d.week === weekNum);
-                if (firstDayOfWeek) selectedDayId = firstDayOfWeek.id;
-            }
-
-            renderDayNav();
-            renderDayDetail();
-
-            // Update Grocery List for Week
-            const weekLabel = weekNum === 'all' ? 'All 4 Weeks Combined' : `Week ${weekNum}`;
-            document.getElementById('grocery-active-week-label').innerText = weekLabel;
-            renderGroceryList();
-            updateProgress();
-        }
-
-        // --- MEAL PLANNER RENDERERS ---
-        function renderDayNav() {
-            const navContainer = document.getElementById('days-nav');
-            const availableDays = activeWeek === 'all' 
-                ? MEAL_PLAN 
-                : MEAL_PLAN.filter(d => d.week === activeWeek);
-
-            navContainer.innerHTML = availableDays.map(item => {
-                const isActive = item.id === selectedDayId;
-                const activeStyle = isActive 
-                    ? 'bg-terracotta-50 border-terracotta-500 text-terracotta-700 font-bold shadow-sm' 
-                    : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50';
-
-                return `
-                    <button onclick="selectDay('${item.id}')" class="p-2.5 border-2 rounded-xl text-left transition-all duration-150 ${activeStyle} flex flex-col justify-between h-20">
-                        <div class="flex items-center justify-between w-full">
-                            <span class="text-[10px] uppercase tracking-wider ${isActive ? 'text-terracotta-600 font-extrabold' : 'text-gray-400'}">${item.day.slice(0,3)}</span>
-                            ${activeWeek === 'all' ? `<span class="text-[9px] bg-orange-100 text-terracotta-700 px-1 rounded">W${item.week}</span>` : ''}
-                        </div>
-                        <span class="text-xs line-clamp-1 font-bold ${isActive ? 'text-terracotta-800' : 'text-gray-700'}">${item.title}</span>
-                    </button>
-                `;
-            }).join('');
-        }
-
-        function selectDay(dayId) {
-            selectedDayId = dayId;
-            renderDayNav();
-            renderDayDetail();
-        }
-
-        function renderDayDetail() {
-            const data = MEAL_PLAN.find(d => d.id === selectedDayId);
-            if (!data) return;
-
-            const container = document.getElementById('day-detail-container');
-
-            container.innerHTML = `
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-orange-100 transition-all duration-200">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-5">
-                        <div>
-                            <div class="flex items-center space-x-2 mb-1">
-                                <span class="bg-orange-100 text-terracotta-700 font-bold text-xs px-2.5 py-0.5 rounded-full">Week ${data.week} • ${data.day}</span>
-                                <span class="bg-sage-100 text-sage-600 font-semibold text-xs px-2.5 py-0.5 rounded-full">${data.tag}</span>
-                                <span class="text-xs text-gray-400 font-medium"><i class="fa-regular fa-clock mr-1"></i>${data.prepTime}</span>
-                            </div>
-                            <h2 class="text-2xl font-extrabold text-gray-900">${data.title}</h2>
-                            <p class="text-sm font-medium text-gray-500">${data.subtitle}</p>
-                        </div>
-                    </div>
-
-                    <!-- Main Grid Content -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                        <!-- Summary & Ingredients -->
-                        <div class="lg:col-span-2 space-y-5">
-                            <div>
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Dish Overview</h4>
-                                <p class="text-gray-700 text-sm leading-relaxed bg-gray-50 p-4 rounded-xl border border-gray-100">${data.description}</p>
-                            </div>
-
-                            <div>
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Ingredients Needed</h4>
-                                <div class="flex flex-wrap gap-2">
-                                    ${data.ingredientsList.map(ing => `
-                                        <span class="bg-orange-50/80 text-orange-900 border border-orange-200/60 text-xs font-medium px-3 py-1.5 rounded-lg flex items-center">
-                                            <i class="fa-solid fa-check text-terracotta-500 text-[10px] mr-1.5"></i>${ing}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            </div>
-
-                            <div class="pt-2">
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Serving Suggestion</h4>
-                                <p class="text-sm text-gray-600 flex items-start space-x-2 bg-amber-50/50 p-3 rounded-xl border border-amber-100">
-                                    <i class="fa-solid fa-utensils text-amber-600 mt-0.5"></i>
-                                    <span>${data.servingIdea}</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Toddler Corner Banner -->
-                        <div class="bg-gradient-to-br from-sage-50 to-emerald-50 rounded-2xl p-5 border border-sage-100 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center space-x-2 text-sage-600 font-bold text-sm mb-3">
-                                    <div class="w-7 h-7 rounded-lg bg-sage-500 text-white flex items-center justify-center text-xs shadow-sm">
-                                        <i class="fa-solid fa-child"></i>
-                                    </div>
-                                    <span>Toddler Friendly Prep & Mash</span>
-                                </div>
-                                <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
-                                    "${data.toddlerTip}"
-                                </p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-sage-200/50 flex items-center text-xs text-sage-600 font-semibold">
-                                <i class="fa-solid fa-heart mr-1.5 text-rose-500"></i> Easy for little palates!
-                            </div>
-                        </div>
-                    </div>
+            document.getElementById('aiResultContainer').innerHTML = `
+                <div class="ai-result">
+                    <h4 style="margin-top:0; color:#2c3e50;">🍽️ AI Recipe: ${query} (Toddler-Friendly Version)</h4>
+                    <p><strong>Overview:</strong> A delicious, mild-spice preparation adjusted so toddlers can enjoy it safely.</p>
+                    <p><strong>📦 Ingredients You Already Have in Inventory:</strong> ${haveList.length > 0 ? haveList.join(', ') : 'None'}</p>
+                    <p><strong>🛒 Ingredients You Need to Buy:</strong> ${buyList.length > 0 ? buyList.join(', ') : 'None - You have everything!'}</p>
+                    <p><strong>💡 Toddler Adjustment Tip:</strong> Reduce spice level by half, use coconut milk or broth for creaminess, and finely dice vegetables.</p>
                 </div>
             `;
-        }
+        }, 1000);
+    }
 
-        // --- GROCERY LIST LOGIC & RENDERERS ---
-        function renderCategoryPills() {
-            const container = document.getElementById('category-pills');
-            let html = `
-                <button onclick="setCategoryFilter('all')" class="px-3 py-1 rounded-lg text-xs font-semibold transition-all ${activeCategoryFilter === 'all' ? 'bg-terracotta-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
-                    All Categories
-                </button>
-            `;
-            GROCERY_CATEGORIES.forEach(cat => {
-                const isActive = activeCategoryFilter === cat.id;
-                html += `
-                    <button onclick="setCategoryFilter('${cat.id}')" class="px-3 py-1 rounded-lg text-xs font-semibold transition-all ${isActive ? 'bg-terracotta-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
-                        <i class="fa-solid ${cat.icon} mr-1"></i>${cat.name}
-                    </button>
-                `;
-            });
-            container.innerHTML = html;
-        }
+    // Initialize on load
+    renderMealPlans();
+</script>
 
-        function setCategoryFilter(catId) {
-            activeCategoryFilter = catId;
-            renderCategoryPills();
-            renderGroceryList();
-        }
-
-        function setStoreFilter(store) {
-            activeStoreFilter = store;
-            ['all', 'walmart', 'ac'].forEach(s => {
-                const btn = document.getElementById(`store-${s}`);
-                if (s === store) {
-                    btn.className = 'px-3.5 py-1.5 text-xs font-bold rounded-lg bg-white text-terracotta-600 shadow-sm transition-all';
-                } else {
-                    btn.className = 'px-3.5 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 transition-all';
-                }
-            });
-            renderGroceryList();
-        }
-
-        function renderGroceryList() {
-            const container = document.getElementById('grocery-categories-container');
-            const searchVal = document.getElementById('grocery-search').value.toLowerCase().trim();
-
-            let totalItemsCount = 0;
-            let checkedItemsCount = 0;
-
-            const categoriesToRender = activeCategoryFilter === 'all' 
-                ? GROCERY_CATEGORIES 
-                : GROCERY_CATEGORIES.filter(c => c.id === activeCategoryFilter);
-
-            let html = '';
-
-            categoriesToRender.forEach(cat => {
-                // Filter by week active
-                let items = GROCERY_ITEMS.filter(i => {
-                    if (activeWeek === 'all') return i.category === cat.id;
-                    return i.category === cat.id && i.weeks.includes(Number(activeWeek));
-                });
-
-                // Filter by store
-                if (activeStoreFilter === 'ac') {
-                    items = items.filter(i => i.store === 'ac');
-                }
-
-                // Search Filter
-                if (searchVal) {
-                    items = items.filter(i => 
-                        i.name.toLowerCase().includes(searchVal) || 
-                        (i.walmartAlt && i.walmartAlt.toLowerCase().includes(searchVal)) ||
-                        i.recipes.some(r => r.toLowerCase().includes(searchVal))
-                    );
-                }
-
-                if (items.length === 0) return;
-
-                html += `
-                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-orange-100">
-                        <div class="flex items-center space-x-2 mb-4 pb-2 border-b border-gray-100">
-                            <i class="fa-solid ${cat.icon} text-terracotta-500"></i>
-                            <h3 class="font-bold text-gray-900 text-sm sm:text-base">${cat.name}</h3>
-                            <span class="text-xs text-gray-400 font-normal">(${items.length} items)</span>
-                        </div>
-                        <div class="divide-y divide-gray-100">
-                `;
-
-                items.forEach(item => {
-                    const isChecked = !!checkedItems[item.id];
-                    totalItemsCount++;
-                    if (isChecked) checkedItemsCount++;
-
-                    let storeBadge = '';
-                    if (item.store === 'ac') {
-                        storeBadge = `<span class="bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold px-2 py-0.5 rounded-full">A&C Supermarket Specialty</span>`;
-                    } else if (item.store === 'both') {
-                        storeBadge = `<span class="bg-gray-100 text-gray-600 text-[10px] font-medium px-2 py-0.5 rounded-full">Walmart / Local Grocery</span>`;
-                    }
-
-                    const showAlt = (activeStoreFilter === 'walmart' || activeStoreFilter === 'all') && item.walmartAlt;
-
-                    html += `
-                        <div class="py-3 flex items-start justify-between gap-3 group">
-                            <div class="flex items-start space-x-3 flex-grow">
-                                <input type="checkbox" id="check-${item.id}" ${isChecked ? 'checked' : ''} onchange="toggleCheck('${item.id}')" class="mt-1 h-4 w-4 text-terracotta-600 focus:ring-terracotta-500 border-gray-300 rounded cursor-pointer">
-                                <label for="check-${item.id}" class="cursor-pointer select-none flex-grow">
-                                    <div class="flex flex-wrap items-center gap-2">
-                                        <span class="font-bold text-sm ${isChecked ? 'checked-item text-gray-400' : 'text-gray-800'}">${item.name}</span>
-                                        <span class="text-xs bg-orange-50 text-terracotta-700 px-2 py-0.5 rounded-md font-semibold">${item.qty}</span>
-                                        ${storeBadge}
-                                    </div>
-
-                                    <!-- Dish tags -->
-                                    <div class="mt-1 flex flex-wrap gap-1 text-[11px] text-gray-400">
-                                        <span>Recipes: ${item.recipes.join(', ')}</span>
-                                    </div>
-
-                                    <!-- Substitution Note -->
-                                    ${showAlt ? `
-                                        <div class="mt-1.5 text-xs bg-amber-50 text-amber-800 p-2 rounded-lg border border-amber-200/60 flex items-start space-x-1.5">
-                                            <i class="fa-solid fa-right-left text-amber-600 mt-0.5 text-[11px]"></i>
-                                            <span><strong>Walmart Clayton Substitute:</strong> ${item.walmartAlt}</span>
-                                        </div>
-                                    ` : ''}
-                                </label>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                html += `
-                        </div>
-                    </div>
-                `;
-            });
-
-            if (html === '') {
-                html = `
-                    <div class="text-center py-12 bg-white rounded-2xl border border-dashed border-gray-200">
-                        <i class="fa-solid fa-basket-shopping text-4xl text-gray-300 mb-2"></i>
-                        <p class="text-gray-500 font-medium text-sm">No grocery items found for this week or filter selection.</p>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = html;
-            updateBadgeCount(checkedItemsCount, totalItemsCount);
-        }
-
-        function toggleCheck(id) {
-            checkedItems[id] = !checkedItems[id];
-            localStorage.setItem('ph_meal_checked_v2', JSON.stringify(checkedItems));
-            renderGroceryList();
-            updateProgress();
-            showToast(checkedItems[id] ? "Item checked off" : "Item restored");
-        }
-
-        function resetGroceryChecks() {
-            checkedItems = {};
-            localStorage.removeItem('ph_meal_checked_v2');
-            renderGroceryList();
-            updateProgress();
-            showToast("Grocery list reset");
-        }
-
-        function updateBadgeCount(checked, total) {
-            const badge = document.getElementById('grocery-badge');
-            badge.innerText = `${checked}/${total}`;
-        }
-
-        function updateProgress() {
-            let filteredItems = GROCERY_ITEMS.filter(i => {
-                if (activeWeek === 'all') return true;
-                return i.weeks.includes(Number(activeWeek));
-            });
-
-            const total = filteredItems.length;
-            let checkedCount = 0;
-            filteredItems.forEach(item => {
-                if (checkedItems[item.id]) checkedCount++;
-            });
-
-            const percent = total === 0 ? 0 : Math.round((checkedCount / total) * 100);
-            document.getElementById('progress-percent').innerText = `${percent}% Completed`;
-            document.getElementById('progress-bar-fill').style.width = `${percent}%`;
-            updateBadgeCount(checkedCount, total);
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').innerText = msg;
-            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
-            }, 2000);
-        }
-    </script>
 </body>
 </html>
